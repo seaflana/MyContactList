@@ -48,7 +48,7 @@ public class ContactListActivity extends AppCompatActivity {
         initMapButton();
         initSettingsButton();
         ContactAdapter.setOnItemClickListener(onItemClickListener);
-        //initDeleteSwitch();
+        initDeleteSwitch();
         initAddContactButton();
 
     }
@@ -114,6 +114,19 @@ public class ContactListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ContactListActivity.this, MainActivity.class);
                 startActivity(intent);
+            }
+        });
+    }
+
+    //Delete Switch code
+    private void initDeleteSwitch() {
+        Switch s = findViewById(R.id.switchDelete);
+        s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Boolean status = compoundButton.isChecked();
+                contactAdapter.setDelete(status);
+                contactAdapter.notifyDataSetChanged();
             }
         });
     }
