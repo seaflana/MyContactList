@@ -45,6 +45,7 @@ public class DatePickerDialog extends DialogFragment {
                 saveItem(selectedDate);
             }
         });
+
         Button cancelButton = view.findViewById(R.id.buttonCancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +53,7 @@ public class DatePickerDialog extends DialogFragment {
                 getDialog().dismiss();
             }
         });
+
         return view;
     }
 
