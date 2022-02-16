@@ -14,4 +14,5 @@
     <string name="cell_phone">Cell Phone:</string>
     <string name="state">State</string>
     <string name="zipcode">Zipcode</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.mycontactlist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
-public class ContactAdapter extends RecyclerView.Adapter {
+public class ContactAdapter extends RecyclerView.Adapter{
     private ArrayList<Contact> contactData;
     private View.OnClickListener mOnItemClickListener;
-    private static boolean isDeleting;
+    private boolean isDeleting;
     private Context parentContext;
-
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
@@ -26,7 +27,7 @@ public class ContactAdapter extends RecyclerView.Adapter {
         public Button deleteButton;
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewContact = itemView.findViewById(R.id.textViewName);
+            textViewContact = itemView.findViewById(R.id.textContactName);
             textPhone = itemView.findViewById(R.id.textPhoneNumber);
             deleteButton = itemView.findViewById(R.id.buttonDeleteContact);
             itemView.setTag(this);
@@ -36,11 +37,9 @@ public class ContactAdapter extends RecyclerView.Adapter {
         public TextView getContactTextView() {
             return textViewContact;
         }
-
         public TextView getPhoneTextView() {
             return textPhone;
         }
-
         public Button getDeleteButton() {
             return deleteButton;
         }
@@ -51,15 +50,14 @@ public class ContactAdapter extends RecyclerView.Adapter {
         parentContext = context;
     }
 
-    public static void setOnItemClickListener(View.OnClickListener itemClickListener) {
+    public void setOnItemClickListener(View.OnClickListener itemClickListener) {
         mOnItemClickListener = itemClickListener;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.simple_item_view, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         return new ContactViewHolder(v);
     }
 
@@ -68,21 +66,23 @@ public class ContactAdapter extends RecyclerView.Adapter {
         ContactViewHolder cvh = (ContactViewHolder) holder;
         cvh.getContactTextView().setText(contactData.get(position).getContactName());
         cvh.getPhoneTextView().setText(contactData.get(position).getPhoneNumber());
-            if (isDeleting) {
-                cvh.getDeleteButton().setVisibility(View.VISIBLE);
-                cvh.getDeleteButton().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        deleteItem(position);
-                    }
-                });
-            }
-            else {
-                cvh.getDeleteButton().setVisibility(View.INVISIBLE);
-            }
+        if (isDeleting) {
+            cvh.getDeleteButton().setVisibility(View.VISIBLE);
+            cvh.getDeleteButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteItem(position);
+                }
+            });
+        }
+        else {
+            cvh.getDeleteButton().setVisibility(View.INVISIBLE);
+        }
     }
-    public static void setDelete(boolean b) {
-        isDeleting = b;
+
+    @Override
+    public int getItemCount() {
+        return contactData.size();
     }
 
     private void deleteItem(int position) {
@@ -99,14 +99,14 @@ public class ContactAdapter extends RecyclerView.Adapter {
             else {
                 Toast.makeText(parentContext, "Delete Failed!", Toast.LENGTH_LONG).show();
             }
+
         }
         catch (Exception e) {
-            Toast.makeText(parentContext, "Delete Failed!", Toast.LENGTH_LONG).show();
+
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return contactData.size();
+    public void setDelete(boolean b) {
+        isDeleting = b;
     }
 }

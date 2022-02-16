@@ -16,6 +16,7 @@ public class ContactSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_settings);
+
         initListButton();
         initMapButton();
         initSettingsButton();
@@ -34,7 +35,6 @@ public class ContactSettingsActivity extends AppCompatActivity {
             }
         });
     }
-
     private void initMapButton() {
         ImageButton ibList = findViewById(R.id.imageButtonMap);
         ibList.setOnClickListener(new View.OnClickListener() {
@@ -45,14 +45,11 @@ public class ContactSettingsActivity extends AppCompatActivity {
             }
         });
     }
-
-    //Change contact settings activity to go to MainActivity
     private void initSettingsButton() {
-        ImageButton ibSettings = findViewById(R.id.imageButtonSettings);
-        ibSettings.setEnabled(false);
+        ImageButton ibList = findViewById(R.id.imageButtonSettings);
+        ibList.setEnabled(false);
     }
 
-    //Code to initialize Settings Button activity
     private void initSettings() {
         String sortBy = getSharedPreferences("MyContactListPreferences",
                 Context.MODE_PRIVATE).getString("sortfield","contactname");
@@ -82,29 +79,25 @@ public class ContactSettingsActivity extends AppCompatActivity {
         }
     }
 
-    //Settings RadioButton user preference storage
     private void initSortByClick() {
         RadioGroup rgSortBy = findViewById(R.id.radioGroupSortBy);
         rgSortBy.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+            public void onCheckedChanged(RadioGroup arg0, int arg1) {
                 RadioButton rbName = findViewById(R.id.radioName);
                 RadioButton rbCity = findViewById(R.id.radioCity);
                 if (rbName.isChecked()) {
                     getSharedPreferences("MyContactListPreferences",
-                            Context.MODE_PRIVATE).edit()
-                            .putString("sortfield", "contactname").apply();
+                            Context.MODE_PRIVATE).edit().putString("sortfield", "contactname").apply();
                 }
                 else if (rbCity.isChecked()) {
                     getSharedPreferences("MyContactListPreferences",
-                            Context.MODE_PRIVATE).edit()
-                            .putString("sortfield", "city").apply();
+                            Context.MODE_PRIVATE).edit().putString("sortfield", "city").apply();
                 }
                 else {
                     getSharedPreferences("MyContactListPreferences",
-                            Context.MODE_PRIVATE).edit()
-                            .putString("sortfield", "birthday").apply();
+                            Context.MODE_PRIVATE).edit().putString("sortfield", "birthday").apply();
                 }
             }
         });
@@ -115,20 +108,17 @@ public class ContactSettingsActivity extends AppCompatActivity {
         rgSortOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-
+            public void onCheckedChanged(RadioGroup arg0, int arg1) {
                 RadioButton rbAscending = findViewById(R.id.radioAscending);
                 if (rbAscending.isChecked()) {
                     getSharedPreferences("MyContactListPreferences",
-                            Context.MODE_PRIVATE).edit()
-                            .putString("sortorder", "ASC").apply();
+                            Context.MODE_PRIVATE).edit().putString("sortorder", "ASC").apply();
                 }
                 else {
-                    getSharedPreferences("MyContactListPreferences",
-                            Context.MODE_PRIVATE).edit()
-                            .putString("sortorder", "DESC").apply();
+                    getSharedPreferences("MyContactListPreferences", Context.MODE_PRIVATE).edit().putString("sortorder", "DESC").apply();
                 }
             }
         });
     }
+
 }

@@ -1,6 +1,8 @@
 package com.example.mycontactlist;
 
 import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,22 +11,27 @@ import android.widget.CalendarView;
 
 import androidx.fragment.app.DialogFragment;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 public class DatePickerDialog extends DialogFragment {
 
     Calendar selectedDate;
 
     public interface SaveDateListener {
-        void didFinishDatePickerDialog(Calendar selectTime);
+        void didFinishDatePickerDialog(Calendar selectedTime);
     }
 
     public DatePickerDialog() {
-        //Empty constructor required for DialogFragment
+        // Empty constructor required for DialogFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.select_date, container);
 
         getDialog().setTitle("Select Date");
@@ -41,19 +48,17 @@ public class DatePickerDialog extends DialogFragment {
         Button saveButton = view.findViewById(R.id.buttonSelect);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 saveItem(selectedDate);
             }
         });
-
         Button cancelButton = view.findViewById(R.id.buttonCancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 getDialog().dismiss();
             }
         });
-
         return view;
     }
 
@@ -62,4 +67,6 @@ public class DatePickerDialog extends DialogFragment {
         activity.didFinishDatePickerDialog(selectedTime);
         getDialog().dismiss();
     }
+
 }
+

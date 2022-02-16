@@ -1,4 +1,5 @@
 package com.example.mycontactlist;
+
 import java.util.Calendar;
 
 public class Contact {
@@ -21,80 +22,61 @@ public class Contact {
     public int getContactID() {
         return contactID;
     }
-
-    public void setContactID(int contactID) {
-        this.contactID = contactID;
+    public void setContactID(int i) {
+        contactID = i;
     }
-
     public String getContactName() {
         return contactName;
     }
-
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
+    public void setContactName(String s) {
+        contactName = s;
     }
-
-    public String getStreetAddress() {
-        return streetAddress;
-    }
-
-    public void setStreetAddress(String streetAddress) {
-        this.streetAddress = streetAddress;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getCellNumber() {
-        return cellNumber;
-    }
-
-    public void setCellNumber(String cellNumber) {
-        this.cellNumber = cellNumber;
-    }
-
-    public String getEMail() {
-        return eMail;
-    }
-
-    public void setEMail(String eMail) {
-        this.eMail = eMail;
-    }
-
     public Calendar getBirthday() {
         return birthday;
     }
-
-    public void setBirthday(Calendar birthday) {
-        this.birthday = birthday;
+    public void setBirthday(Calendar c) {
+        birthday = c;
+    }
+    public String getStreetAddress() {
+        return streetAddress;
+    }
+    public void setStreetAddress(String s) {
+        streetAddress = s;
+    }
+    public String getCity() {
+        return city;
+    }
+    public void setCity(String s) {
+        city = s;
+    }
+    public String getState() {
+        return state;
+    }
+    public void setState(String s) {
+        state = s;
+    }
+    public String getZipCode() {
+        return zipCode;
+    }
+    public void setZipCode(String s) {
+        zipCode = s;
+    }
+    public void setPhoneNumber(String s) {
+        phoneNumber = s;
+    }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+    public void setCellNumber(String s) {
+        cellNumber = s;
+    }
+    public String getCellNumber() {
+        return cellNumber;
+    }
+    public void setEMail(String s) {
+        eMail = s;
+    }
+    public String getEMail() {
+        return eMail;
     }
 }

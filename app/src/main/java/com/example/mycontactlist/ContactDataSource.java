@@ -3,14 +3,14 @@ package com.example.mycontactlist;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class ContactDataSource {
-
     private SQLiteDatabase database;
     private ContactDBHelper dbHelper;
 
@@ -26,7 +26,6 @@ public class ContactDataSource {
         dbHelper.close();
     }
 
-    //Methods for Inserting and Updating Contacts
     public boolean insertContact(Contact c) {
         boolean didSucceed = false;
         try {
@@ -40,7 +39,7 @@ public class ContactDataSource {
             initialValues.put("phonenumber", c.getPhoneNumber());
             initialValues.put("cellnumber", c.getCellNumber());
             initialValues.put("email", c.getEMail());
-            initialValues.put("birthday", String.valueOf(c.getBirthday().getTimeInMillis()));
+            initialValues.put("birthday",String.valueOf(c.getBirthday().getTimeInMillis()));
 
             didSucceed = database.insert("contact", null, initialValues) > 0;
         }
@@ -75,8 +74,7 @@ public class ContactDataSource {
         return didSucceed;
     }
 
-    //Retrieve the new Contact ID
-    public int getLastContactID() {
+    public int getLastContactId() {
         int lastId;
         try {
             String query = "Select MAX(_id) from contact";
@@ -92,8 +90,6 @@ public class ContactDataSource {
         return lastId;
     }
 
-
-    //getContactName code to retrieve Contact's Names from the database
     public ArrayList<String> getContactName() {
         ArrayList<String> contactNames = new ArrayList<>();
         try {
@@ -113,11 +109,11 @@ public class ContactDataSource {
         return contactNames;
     }
 
-    //getContacts Method
     public ArrayList<Contact> getContacts(String sortField, String sortOrder) {
+
         ArrayList<Contact> contacts = new ArrayList<Contact>();
         try {
-            String query = "SELECT * FROM contact ORDER BY " + sortField + " " + sortOrder;
+            String query = "SELECT  * FROM contact ORDER BY " + sortField + " " + sortOrder;
             Cursor cursor = database.rawQuery(query, null);
 
             Contact newContact;
@@ -144,12 +140,13 @@ public class ContactDataSource {
         catch (Exception e) {
             contacts = new ArrayList<Contact>();
         }
+        System.out.println(contacts.toArray());
         return contacts;
     }
 
-    public Contact getSpecificContact(int contactID) {
+    public Contact getSpecificContact(int contactId) {
         Contact contact = new Contact();
-        String query = "SELECT * FROM contact WHERE _id =" + contactID;
+        String query = "SELECT  * FROM contact WHERE _id =" + contactId;
         Cursor cursor = database.rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
@@ -177,8 +174,9 @@ public class ContactDataSource {
             didDelete = database.delete("contact", "_id=" + contactId, null) > 0;
         }
         catch (Exception e) {
-            //Do nothing - return value already set to false
+            //Do nothing -return value already set to false
         }
         return didDelete;
     }
+
 }
