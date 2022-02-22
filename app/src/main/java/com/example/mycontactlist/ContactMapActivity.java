@@ -9,11 +9,16 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -22,6 +27,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 
 import android.view.WindowManager;
@@ -58,6 +64,10 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
 
     final int PERMISSION_REQUEST_LOCATION = 101;
     GoogleMap gMap;
+    SensorManager sensorManager;
+    Sensor accelerometer;
+    Sensor magnetometer;
+    TextView textDirection;
     FusedLocationProviderClient fusedLocationProviderClient;
     //LocationManager locationManager;
     //LocationListener gpsListener;
@@ -101,7 +111,23 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
         initListButton();
         initMapButton();
         initSettingsButton();
+        initMapTypeButtons();
         //initGetLocationButton();
+
+
+        //Registering Sensors for Monitoring
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        if (accelerometer != null && magnetometer != null) {
+            sensorManager.registerListener(mySensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+            sensorManager.registerListener(mySensorEventListener, magnetometer, SensorManager.SENSOR_DELAY_FASTEST);
+        }
+        else {
+            Toast.makeText(this, "Sensors not found", Toast.LENGTH_LONG).show();
+        }
+        textDirection = (TextView) findViewById(R.id.textHeading);
 
     }
 
@@ -173,6 +199,22 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
                 Intent intent = new Intent(ContactMapActivity.this, ContactSettingsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+            }
+        });
+    }
+
+    private void initMapTypeButtons() {
+        RadioGroup rgMapType = findViewById(R.id.radioGroupMapType);
+        rgMapType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rbNormal = findViewById(R.id.radioButtonNormal);
+                if (rbNormal.isChecked()) {
+                    gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                }
+                else {
+                    gMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                }
             }
         });
     }
@@ -286,6 +328,9 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
         gMap = googleMap;
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
+        RadioButton rbNormal = findViewById(R.id.radioButtonNormal);
+        rbNormal.setChecked(true);
+
         Point size = new Point();
         WindowManager w = getWindowManager();
         w.getDefaultDisplay().getSize(size);
@@ -344,10 +389,11 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
                 alertDialog.setTitle("No data");
                 alertDialog.setMessage("No data is available for the mapping function");
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
                 });
+                alertDialog.show();
             }
         }
 
@@ -388,4 +434,51 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
         }
 
     }
+
+    private SensorEventListener mySensorEventListener = new SensorEventListener() {
+
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+        float[] accelerometerValues;
+        float[] magneticValues;
+
+        public void onSensorChanged(SensorEvent event) {
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)accelerometerValues = event.values;
+            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)magneticValues =  event.values;
+            if (accelerometerValues != null && magneticValues != null) {
+                float R[] = new float[9];
+                float I[] = new float[9];
+
+                boolean success = SensorManager.getRotationMatrix(R, I, accelerometerValues, magneticValues);
+
+                if (success) {
+                    float orientation[] = new float[3];
+                    SensorManager.getOrientation(R, orientation);
+
+                    float azimut = (float) Math.toDegrees(orientation[0]);
+                    if (azimut < 0.0f) { azimut += 360.0f; }
+                    String direction;
+                    if (azimut >= 315 || azimut < 45) { direction = "N"; }
+                    else if (azimut >= 225 && azimut < 315) { direction = "W"; }
+                    else if (azimut >= 135 && azimut < 225) { direction = "S"; }
+                    else {direction = "E"; }
+                    textDirection.setText(direction);
+                }
+            }
+        }
+    };
 }
+
+//Intent modeling
+// - for sending object
+/* Intent mIntent = new Intent();
+    mIntent.putExtra("iis", new MyClass());
+
+   - and your class
+   private class MyClass implements Serializable {
+   }
+
+   - getting at the other end
+   MyClass mc = (MyClass) getIntent().getExtras().getSerializable("iis");
+ */
+
